@@ -37,6 +37,7 @@
                             <th>Harga Jual</th>
                             <th>Diskon</th>
                             <th>Stok</th>
+                            <th>Kadaluarsa</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
                         </thead>
                     </table>
@@ -73,6 +74,7 @@
                 {data: 'harga_jual'},
                 {data: 'diskon'},
                 {data: 'stok'},
+                {data: 'kadaluarsa'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]
         });
@@ -124,6 +126,7 @@
                 $('#modal-form [name=harga_jual]').val(response.harga_jual);
                 $('#modal-form [name=diskon]').val(response.diskon);
                 $('#modal-form [name=stok]').val(response.stok);
+                $('#modal-form [name=kadaluarsa]').val(response.kadaluarsa);
             })
             .fail((errors) => {
                 alert('Tidak dapat menampilkan data');
