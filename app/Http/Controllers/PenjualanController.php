@@ -7,6 +7,7 @@ use App\Models\PenjualanDetail;
 use App\Models\Produk;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use PDF;
 
 class PenjualanController extends Controller
@@ -18,8 +19,14 @@ class PenjualanController extends Controller
 
     public function data()
     {
-        $penjualan = Penjualan::orderBy('id_penjualan', 'desc')->get();
-
+        $level = auth()->user()->level;
+        $id = auth()->user()->id;
+        if($level == 1){
+            $penjualan = Penjualan::orderBy('id_penjualan', 'desc')->get();
+        }
+        elseif($level == 2){
+            $penjualan = Penjualan::where('id_user',$id)->orderBy('id_penjualan', 'desc')->get();
+        }
         return datatables()
             ->of($penjualan)
             ->addIndexColumn()
