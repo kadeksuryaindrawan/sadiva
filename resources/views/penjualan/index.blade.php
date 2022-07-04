@@ -66,6 +66,7 @@
                 {data: 'kode_produk'},
                 {data: 'nama_produk'},
                 {data: 'harga_jual'},
+                {data: 'diskon'},
                 {data: 'jumlah'},
                 {data: 'subtotal'},
             ]

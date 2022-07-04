@@ -102,6 +102,9 @@ class PenjualanController extends Controller
             ->addColumn('harga_jual', function ($detail) {
                 return 'Rp. '. format_uang($detail->harga_jual);
             })
+            ->addColumn('diskon', function ($detail) {
+                return $detail->diskon . '%';
+            })
             ->addColumn('jumlah', function ($detail) {
                 return format_uang($detail->jumlah);
             })
