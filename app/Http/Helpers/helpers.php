@@ -33,7 +33,7 @@ function terbilang ($angka) {
 function tanggal_indonesia($tgl, $tampil_hari = true)
 {
     $nama_hari  = array(
-        'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum\'at', 'Sabtu'
+        'Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'
     );
     $nama_bulan = array(1 =>
         'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'

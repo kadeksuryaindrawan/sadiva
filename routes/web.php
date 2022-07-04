@@ -79,8 +79,20 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/laporan/data/{awal}/{akhir}', [LaporanController::class, 'data'])->name('laporan.data');
         Route::get('/laporan/pdf/{awal}/{akhir}', [LaporanController::class, 'exportPDF'])->name('laporan.export_pdf');
 
-        Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
-        Route::resource('/user', UserController::class);
+        Route::get('/kasir/data', [UserController::class, 'dataKasir'])->name('kasir.data');
+        Route::get('/halaman-kasir', [UserController::class, 'indexKasir'])->name('indexKasir');
+        Route::post('/tambah-kasir', [UserController::class, 'storeKasir'])->name('tambahKasir');
+        Route::resource('/kasir', UserController::class);
+
+        Route::get('/gudang/data', [UserController::class, 'dataGudang'])->name('gudang.data');
+        Route::get('/halaman-gudang', [UserController::class, 'indexGudang'])->name('indexGudang');
+        Route::post('/tambah-gudang', [UserController::class, 'storeGudang'])->name('tambahGudang');
+        Route::resource('/gudang', UserController::class);
+
+        Route::get('/pemilik/data', [UserController::class, 'dataPemilik'])->name('pemilik.data');
+        Route::get('/halaman-pemilik', [UserController::class, 'indexPemilik'])->name('indexPemilik');
+        Route::post('/tambah-pemilik', [UserController::class, 'storePemilik'])->name('tambahPemilik');
+        Route::resource('/pemilik', UserController::class);
 
         Route::get('/setting', [SettingController::class, 'index'])->name('setting.index');
         Route::get('/setting/first', [SettingController::class, 'show'])->name('setting.show');

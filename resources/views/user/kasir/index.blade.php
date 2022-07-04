@@ -1,12 +1,12 @@
 @extends('layouts.master')
 
 @section('title')
-    Daftar User
+    Daftar Kasir
 @endsection
 
 @section('breadcrumb')
     @parent
-    <li class="active">Daftar User</li>
+    <li class="active">Daftar Kasir</li>
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
     <div class="col-lg-12">
         <div class="box">
             <div class="box-header with-border">
-                <button onclick="addForm('{{ route('user.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
+                <button onclick="addForm('{{ route('tambahKasir') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
             </div>
             <div class="box-body table-responsive">
                 <table class="table table-stiped table-bordered">
@@ -30,7 +30,7 @@
     </div>
 </div>
 
-@includeIf('user.form')
+@includeIf('user.kasir.form')
 @endsection
 
 @push('scripts')
@@ -44,7 +44,7 @@
             serverSide: true,
             autoWidth: false,
             ajax: {
-                url: '{{ route('user.data') }}',
+                url: '{{ route('kasir.data') }}',
             },
             columns: [
                 {data: 'DT_RowIndex', searchable: false, sortable: false},
@@ -71,7 +71,7 @@
 
     function addForm(url) {
         $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Tambah User');
+        $('#modal-form .modal-title').text('Tambah Kasir');
 
         $('#modal-form form')[0].reset();
         $('#modal-form form').attr('action', url);
@@ -83,7 +83,7 @@
 
     function editForm(url) {
         $('#modal-form').modal('show');
-        $('#modal-form .modal-title').text('Edit User');
+        $('#modal-form .modal-title').text('Edit Kasir');
 
         $('#modal-form form')[0].reset();
         $('#modal-form form').attr('action', url);

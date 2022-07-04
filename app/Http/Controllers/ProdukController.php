@@ -48,6 +48,9 @@ class ProdukController extends Controller
             ->addColumn('stok', function ($produk) {
                 return format_uang($produk->stok);
             })
+            ->addColumn('kadaluarsa', function ($produk) {
+                return tanggal_indonesia($produk->kadaluarsa, false);
+            })
             ->addColumn('aksi', function ($produk) {
                 return '
                 <div class="btn-group">

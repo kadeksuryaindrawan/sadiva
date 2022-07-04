@@ -66,12 +66,23 @@
                     <i class="fa fa-file-pdf-o"></i> <span>Laporan</span>
                 </a>
             </li>
-            <li class="header">SYSTEM</li>
+            <li class="header">USER</li>
             <li>
-                <a href="{{ route('user.index') }}">
-                    <i class="fa fa-users"></i> <span>User</span>
+                <a href="{{ route('indexKasir') }}">
+                    <i class="fa fa-user"></i> <span>Kasir</span>
                 </a>
             </li>
+            <li>
+                <a href="{{ route('indexGudang') }}">
+                    <i class="fa fa-user"></i> <span>Gudang</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('indexPemilik') }}">
+                    <i class="fa fa-user"></i> <span>Pemilik Toko</span>
+                </a>
+            </li>
+            <li class="header">SYSTEM</li>
             <li>
                 <a href="{{ route("setting.index") }}">
                     <i class="fa fa-cogs"></i> <span>Pengaturan</span>

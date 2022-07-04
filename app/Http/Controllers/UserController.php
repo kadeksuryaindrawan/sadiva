@@ -10,21 +10,71 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('user.index');
+        
     }
 
-    public function data()
+    public function indexKasir()
     {
-        $user = User::isNotAdmin()->orderBy('id', 'desc')->get();
+        return view('user.kasir.index');
+    }
 
-        return datatables()
+    public function indexGudang()
+    {
+        return view('user.gudang.index');
+    }
+
+    public function indexPemilik()
+    {
+        return view('user.pemilik.index');
+    }
+
+    public function dataKasir()
+    {
+            $user = User::isNotAdmin()->where('level',2)->orderBy('id', 'desc')->get();
+            return datatables()
             ->of($user)
             ->addIndexColumn()
             ->addColumn('aksi', function ($user) {
                 return '
                 <div class="btn-group">
-                    <button type="button" onclick="editForm(`'. route('user.update', $user->id) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
-                    <button type="button" onclick="deleteData(`'. route('user.destroy', $user->id) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                    <button type="button" onclick="editForm(`'. route('kasir.update', $user->id) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+                    <button type="button" onclick="deleteData(`'. route('kasir.destroy', $user->id) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                </div>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function dataGudang()
+    {
+            $user = User::isNotAdmin()->where('level',3)->orderBy('id', 'desc')->get();
+            return datatables()
+            ->of($user)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($user) {
+                return '
+                <div class="btn-group">
+                    <button type="button" onclick="editForm(`'. route('gudang.update', $user->id) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+                    <button type="button" onclick="deleteData(`'. route('gudang.destroy', $user->id) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                </div>
+                ';
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function dataPemilik()
+    {
+            $user = User::isNotAdmin()->where('level',4)->orderBy('id', 'desc')->get();
+            return datatables()
+            ->of($user)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($user) {
+                return '
+                <div class="btn-group">
+                    <button type="button" onclick="editForm(`'. route('pemilik.update', $user->id) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+                    <button type="button" onclick="deleteData(`'. route('pemilik.destroy', $user->id) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>
                 ';
             })
@@ -48,13 +98,39 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function storeKasir(Request $request)
     {
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->level = 2;
+        $user->foto = '/img/user.jpg';
+        $user->save();
+
+        return response()->json('Data berhasil disimpan', 200);
+    }
+
+    public function storeGudang(Request $request)
+    {
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->level = 3;
+        $user->foto = '/img/user.jpg';
+        $user->save();
+
+        return response()->json('Data berhasil disimpan', 200);
+    }
+
+    public function storePemilik(Request $request)
+    {
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->level = 4;
         $user->foto = '/img/user.jpg';
         $user->save();
 
@@ -120,7 +196,7 @@ class UserController extends Controller
     public function profil()
     {
         $profil = auth()->user();
-        return view('user.profil', compact('profil'));
+        return view('user.kasir.profil', compact('profil'));
     }
 
     public function updateProfil(Request $request)
