@@ -12,7 +12,7 @@ class CekLevel
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param mixed $level  [1. admin | 2. kasir]
+     * @param mixed $level  [1. admin | 2. kasir | 3. gudang | 4. pembeli]
      * @return mixed
      */
     public function handle(Request $request, Closure $next, ...$level)
