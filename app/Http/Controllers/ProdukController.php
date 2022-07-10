@@ -6,6 +6,7 @@ use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Models\Produk;
 use PDF;
+use Illuminate\Support\Facades\DB;
 
 class ProdukController extends Controller
 {
@@ -17,8 +18,9 @@ class ProdukController extends Controller
     public function index()
     {
         $kategori = Kategori::all()->pluck('nama_kategori', 'id_kategori');
-
-        return view('produk.index', compact('kategori'));
+        $stoks = Produk::where('stok','<=',2)->get();
+        $kadaluarsa = DB::select('select nama_produk, DATEDIFF(kadaluarsa, CURDATE()) as expired from produk');
+        return view('produk.index', compact('kategori','stoks','kadaluarsa'));
     }
 
     public function data()
@@ -28,7 +30,47 @@ class ProdukController extends Controller
             // ->orderBy('kode_produk', 'asc')
             ->get();
 
-        return datatables()
+            if(auth()->user()->level == 1){
+                return datatables()
+            ->of($produk)
+            ->addIndexColumn()
+            ->addColumn('select_all', function ($produk) {
+                return '
+                    <input type="checkbox" name="id_produk[]" value="'. $produk->id_produk .'">
+                ';
+            })
+            ->addColumn('kode_produk', function ($produk) {
+                return '<span class="label label-success">'. $produk->kode_produk .'</span>';
+            })
+            ->addColumn('harga_beli', function ($produk) {
+                return format_uang($produk->harga_beli);
+            })
+            ->addColumn('harga_jual', function ($produk) {
+                return format_uang($produk->harga_jual);
+            })
+            ->addColumn('diskon', function ($produk) {
+                return $produk->diskon.'%';
+            })
+            ->addColumn('stok', function ($produk) {
+                return $produk->stok;
+            })
+            ->addColumn('kadaluarsa', function ($produk) {
+                return tanggal_indonesia($produk->kadaluarsa, false);
+            })
+            ->addColumn('aksi', function ($produk) {
+                return '
+                <div class="btn-group">
+                    <button type="button" onclick="editForm(`'. route('produk.update', $produk->id_produk) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+                    <button type="button" onclick="deleteData(`'. route('produk.destroy', $produk->id_produk) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
+                </div>
+                ';
+            })
+            ->rawColumns(['aksi', 'kode_produk', 'select_all'])
+            ->make(true);
+            }
+
+            if(auth()->user()->level == 3){
+                return datatables()
             ->of($produk)
             ->addIndexColumn()
             ->addColumn('select_all', function ($produk) {
@@ -58,12 +100,13 @@ class ProdukController extends Controller
                 return '
                 <div class="btn-group">
                     <button type="button" onclick="editForm(`'. route('produk.update', $produk->id_produk) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
-                    <button type="button" onclick="deleteData(`'. route('produk.destroy', $produk->id_produk) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
                 </div>
                 ';
             })
             ->rawColumns(['aksi', 'kode_produk', 'select_all'])
             ->make(true);
+            }
+        
     }
 
     /**

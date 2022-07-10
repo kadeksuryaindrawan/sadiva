@@ -42,5 +42,11 @@ class DashboardController extends Controller
         } else if(auth()->user()->level == 2) {
             return view('kasir.dashboard');
         }
+        else if(auth()->user()->level == 3) {
+            return view('gudang.dashboard');
+        }
+        else if(auth()->user()->level == 4) {
+            return view('pemilik.dashboard');
+        }
     }
 }
