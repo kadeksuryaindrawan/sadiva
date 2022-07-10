@@ -7,6 +7,8 @@ use App\Http\Controllers\{
     ProdukController,
     PembelianController,
     PembelianDetailController,
+    PermintaanPembelianController,
+    PermintaanPembelianDetailController,
     PenjualanController,
     PenjualanDetailController,
     SettingController,
@@ -44,6 +46,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/halaman-kasir', [UserController::class, 'indexKasir'])->name('indexKasir');
         Route::post('/tambah-kasir', [UserController::class, 'storeKasir'])->name('tambahKasir');
         Route::resource('/kasir', UserController::class);
+
 
         Route::get('/gudang/data', [UserController::class, 'dataGudang'])->name('gudang.data');
         Route::get('/halaman-gudang', [UserController::class, 'indexGudang'])->name('indexGudang');
@@ -95,9 +98,23 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'level:1,4'], function () {
+
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
         Route::get('/laporan/data/{awal}/{akhir}', [LaporanController::class, 'data'])->name('laporan.data');
         Route::get('/laporan/pdf/{awal}/{akhir}', [LaporanController::class, 'exportPDF'])->name('laporan.export_pdf');
+    });
+
+
+    Route::group(['middleware' => 'level:1,3,4'], function () {
+        Route::get('/permintaan_pembelian/data', [PermintaanPembelianController::class, 'data'])->name('permintaan_pembelian.data');
+        Route::get('/permintaan_pembelian/{id}/terima', [PermintaanPembelianController::class, 'terima'])->name('permintaan_pembelian.terima');
+        Route::get('/permintaan_pembelian/{id}/create', [PermintaanPembelianController::class, 'create'])->name('permintaan_pembelian.create');
+        Route::resource('/permintaan_pembelian', PermintaanPembelianController::class)
+            ->except('create');
+        Route::get('/permintaan_pembelian_detail/{id}/data', [PermintaanPembelianDetailController::class, 'data'])->name('permintaan_pembelian_detail.data');
+        Route::get('/permintaan_pembelian_detail/loadform/{diskon}/{total}', [PermintaanPembelianDetailController::class, 'loadForm'])->name('permintaan_pembelian_detail.load_form');
+        Route::resource('/permintaan_pembelian_detail', PermintaanPembelianDetailController::class)
+            ->except('create', 'show', 'edit');
     });
  
     Route::group(['middleware' => 'level:1,2,3,4'], function () {

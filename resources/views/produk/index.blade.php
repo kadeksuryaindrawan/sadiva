@@ -15,9 +15,11 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="btn-group">
+                    @if (auth()->user()->level == 1)
                     <button onclick="addForm('{{ route('produk.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
                     <button onclick="deleteSelected('{{ route('produk.delete_selected') }}')" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Hapus</button>
                     <button onclick="cetakBarcode('{{ route('produk.cetak_barcode') }}')" class="btn btn-info btn-xs btn-flat"><i class="fa fa-barcode"></i> Cetak Barcode</button>
+                    @endif
                 </div>
             </div>
             <div class="box-body table-responsive">
@@ -25,6 +27,7 @@
                     @csrf
                     <table class="table table-stiped table-bordered">
                         <thead>
+                            @if (auth()->user()->level == 1)
                             <th width="5%">
                                 <input type="checkbox" name="select_all" id="select_all">
                             </th>
@@ -39,6 +42,17 @@
                             <th>Stok</th>
                             <th>Kadaluarsa</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
+                            @endif
+                            
+                            @if (auth()->user()->level == 3)
+                            <th width="5%">No</th>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Stok</th>
+                            <th width="15%"><i class="fa fa-cog"></i></th>
+                            @endif
+                            
                         </thead>
                     </table>
                 </form>
@@ -46,6 +60,51 @@
         </div>
     </div>
 </div>
+
+@foreach ($stoks as $stok)
+    <?php
+    if($stok->stok <= 0){
+        echo "
+        <script>
+            alert('Tidak ada stok pada produk $stok->nama_produk, silahkan menambah stok');
+        </script>
+        ";
+    }
+    else{
+        echo "
+        <script>
+            alert('Stok produk $stok->nama_produk tinggal $stok->stok, silahkan menambah stok');
+        </script>
+        ";
+    }
+        
+    ?>
+    
+@endforeach
+
+@if (auth()->user()->level == 1)
+@foreach ($kadaluarsa as $expired)
+<?php
+if($expired->expired <= 0){
+    echo "
+    <script>
+        alert('Produk $expired->nama_produk sudah kadaluarsa');
+    </script>
+    ";
+}
+
+elseif($expired->expired <= 3){
+    echo "
+    <script>
+        alert('Produk $expired->nama_produk akan kadaluarsa $expired->expired hari lagi');
+    </script>
+    ";
+}
+?>
+
+@endforeach
+@endif
+
 
 @includeIf('produk.form')
 @endsection
@@ -64,18 +123,34 @@
                 url: '{{ route('produk.data') }}',
             },
             columns: [
-                {data: 'select_all', searchable: false, sortable: false},
-                {data: 'DT_RowIndex', searchable: false, sortable: false},
-                {data: 'kode_produk'},
-                {data: 'nama_produk'},
-                {data: 'nama_kategori'},
-                {data: 'merk'},
-                {data: 'harga_beli'},
-                {data: 'harga_jual'},
-                {data: 'diskon'},
-                {data: 'stok'},
-                {data: 'kadaluarsa'},
-                {data: 'aksi', searchable: false, sortable: false},
+                <?php
+                    if(auth()->user()->level == 1)
+                    echo"
+                    {data: 'select_all', searchable: false, sortable: false},
+                    {data: 'DT_RowIndex', searchable: false, sortable: false},
+                    {data: 'kode_produk'},
+                    {data: 'nama_produk'},
+                    {data: 'nama_kategori'},
+                    {data: 'merk'},
+                    {data: 'harga_beli'},
+                    {data: 'harga_jual'},
+                    {data: 'diskon'},
+                    {data: 'stok'},
+                    {data: 'kadaluarsa'},
+                    {data: 'aksi', searchable: false, sortable: false},
+                    ";
+
+                    if(auth()->user()->level == 3)
+                    echo"
+                    {data: 'DT_RowIndex', searchable: false, sortable: false},
+                    {data: 'kode_produk'},
+                    {data: 'nama_produk'},
+                    {data: 'nama_kategori'},
+                    {data: 'stok'},
+                    {data: 'aksi', searchable: false, sortable: false},
+                    ";
+                ?>
+                
             ]
         });
 
@@ -97,7 +172,7 @@
             $(':checkbox').prop('checked', this.checked);
         });
     });
-
+    
     function addForm(url) {
         $('#modal-form').modal('show');
         $('#modal-form .modal-title').text('Tambah Produk');
