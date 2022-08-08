@@ -30,7 +30,7 @@ class ProdukController extends Controller
             // ->orderBy('kode_produk', 'asc')
             ->get();
 
-            if(auth()->user()->level == 1){
+            if(auth()->user()->level == 1 || auth()->user()->level == 3){
                 return datatables()
             ->of($produk)
             ->addIndexColumn()
@@ -69,43 +69,7 @@ class ProdukController extends Controller
             ->make(true);
             }
 
-            if(auth()->user()->level == 3){
-                return datatables()
-            ->of($produk)
-            ->addIndexColumn()
-            ->addColumn('select_all', function ($produk) {
-                return '
-                    <input type="checkbox" name="id_produk[]" value="'. $produk->id_produk .'">
-                ';
-            })
-            ->addColumn('kode_produk', function ($produk) {
-                return '<span class="label label-success">'. $produk->kode_produk .'</span>';
-            })
-            ->addColumn('harga_beli', function ($produk) {
-                return format_uang($produk->harga_beli);
-            })
-            ->addColumn('harga_jual', function ($produk) {
-                return format_uang($produk->harga_jual);
-            })
-            ->addColumn('diskon', function ($produk) {
-                return $produk->diskon.'%';
-            })
-            ->addColumn('stok', function ($produk) {
-                return format_uang($produk->stok);
-            })
-            ->addColumn('kadaluarsa', function ($produk) {
-                return tanggal_indonesia($produk->kadaluarsa, false);
-            })
-            ->addColumn('aksi', function ($produk) {
-                return '
-                <div class="btn-group">
-                    <button type="button" onclick="editForm(`'. route('produk.update', $produk->id_produk) .'`)" class="btn btn-xs btn-info btn-flat"><i class="fa fa-pencil"></i></button>
-                </div>
-                ';
-            })
-            ->rawColumns(['aksi', 'kode_produk', 'select_all'])
-            ->make(true);
-            }
+            
         
     }
 

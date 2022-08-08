@@ -15,7 +15,7 @@
         <div class="box">
             <div class="box-header with-border">
                 <div class="btn-group">
-                    @if (auth()->user()->level == 1)
+                    @if (auth()->user()->level == 1 || auth()->user()->level == 3)
                     <button onclick="addForm('{{ route('produk.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
                     <button onclick="deleteSelected('{{ route('produk.delete_selected') }}')" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-trash"></i> Hapus</button>
                     <button onclick="cetakBarcode('{{ route('produk.cetak_barcode') }}')" class="btn btn-info btn-xs btn-flat"><i class="fa fa-barcode"></i> Cetak Barcode</button>
@@ -27,7 +27,7 @@
                     @csrf
                     <table class="table table-stiped table-bordered">
                         <thead>
-                            @if (auth()->user()->level == 1)
+                            @if (auth()->user()->level == 1 || auth()->user()->level == 3)
                             <th width="5%">
                                 <input type="checkbox" name="select_all" id="select_all">
                             </th>
@@ -41,15 +41,6 @@
                             <th>Diskon</th>
                             <th>Stok</th>
                             <th>Kadaluarsa</th>
-                            <th width="15%"><i class="fa fa-cog"></i></th>
-                            @endif
-                            
-                            @if (auth()->user()->level == 3)
-                            <th width="5%">No</th>
-                            <th>Kode</th>
-                            <th>Nama</th>
-                            <th>Kategori</th>
-                            <th>Stok</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
                             @endif
                             
@@ -82,7 +73,7 @@
     
 @endforeach
 
-@if (auth()->user()->level == 1)
+@if (auth()->user()->level == 1 || auth()->user()->level == 3)
 @foreach ($kadaluarsa as $expired)
 <?php
 if($expired->expired <= 0){
@@ -124,7 +115,7 @@ elseif($expired->expired <= 3){
             },
             columns: [
                 <?php
-                    if(auth()->user()->level == 1)
+                    if(auth()->user()->level == 1 || auth()->user()->level == 3)
                     echo"
                     {data: 'select_all', searchable: false, sortable: false},
                     {data: 'DT_RowIndex', searchable: false, sortable: false},
@@ -137,16 +128,6 @@ elseif($expired->expired <= 3){
                     {data: 'diskon'},
                     {data: 'stok'},
                     {data: 'kadaluarsa'},
-                    {data: 'aksi', searchable: false, sortable: false},
-                    ";
-
-                    if(auth()->user()->level == 3)
-                    echo"
-                    {data: 'DT_RowIndex', searchable: false, sortable: false},
-                    {data: 'kode_produk'},
-                    {data: 'nama_produk'},
-                    {data: 'nama_kategori'},
-                    {data: 'stok'},
                     {data: 'aksi', searchable: false, sortable: false},
                     ";
                 ?>
