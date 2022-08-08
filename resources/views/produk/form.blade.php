@@ -11,7 +11,7 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    @if (auth()->user()->level == 1)
+                    @if (auth()->user()->level == 1 || auth()->user()->level == 3)
                         <div class="form-group row">
                             <label for="nama_produk" class="col-lg-2 col-lg-offset-1 control-label">Nama</label>
                             <div class="col-lg-6">
@@ -74,16 +74,6 @@
                                 <span class="help-block with-errors"></span>
                             </div>
                         </div>
-                    @endif
-
-                    @if (auth()->user()->level == 3)
-                    <div class="form-group row">
-                        <label for="stok" class="col-lg-2 col-lg-offset-1 control-label">Stok</label>
-                        <div class="col-lg-6">
-                            <input type="number" name="stok" id="stok" class="form-control" required value="0">
-                            <span class="help-block with-errors"></span>
-                        </div>
-                    </div>
                     @endif
 
                     
