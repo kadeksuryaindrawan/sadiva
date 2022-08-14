@@ -205,9 +205,6 @@ class PermintaanPembelianController extends Controller
         $p = Pembelian::orderBy('id_pembelian','desc')->first();
         $id_pembelian = $p->id_pembelian;
         foreach ($detail as $item) {
-            $produk = Produk::find($item->id_produk);
-            $produk->stok += $item->jumlah;
-            $produk->update();
 
             PembelianDetail::create([
                 'id_pembelian'=>$id_pembelian,

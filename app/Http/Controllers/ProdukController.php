@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use DateTime;
+use Illuminate\Support\Carbon;
 use PDF;
 use Illuminate\Support\Facades\DB;
 
@@ -17,6 +19,16 @@ class ProdukController extends Controller
      */
     public function index()
     {
+        // $dt = Carbon::now();
+        // // $jarak = strtotime("2022-08-17")-strtotime($dt->toDateString());
+        // // $hari = $jarak / 60 / 60 / 24;
+        // // dd($hari);
+        // $tgl1 = new DateTime($dt->toDateString());
+        // $tgl2 = new DateTime("2022-08-17");
+        // $jarak = $tgl1->diff($tgl2);
+
+        // dd($jarak->d);
+
         $kategori = Kategori::all()->pluck('nama_kategori', 'id_kategori');
         $stoks = Produk::where('stok','<=',2)->get();
         $kadaluarsa = DB::select('select nama_produk, DATEDIFF(kadaluarsa, CURDATE()) as expired from produk');
@@ -42,9 +54,6 @@ class ProdukController extends Controller
             ->addColumn('kode_produk', function ($produk) {
                 return '<span class="label label-success">'. $produk->kode_produk .'</span>';
             })
-            ->addColumn('harga_beli', function ($produk) {
-                return format_uang($produk->harga_beli);
-            })
             ->addColumn('harga_jual', function ($produk) {
                 return format_uang($produk->harga_jual);
             })
@@ -52,10 +61,26 @@ class ProdukController extends Controller
                 return $produk->diskon.'%';
             })
             ->addColumn('stok', function ($produk) {
-                return $produk->stok;
+                if($produk->stok <= 2){
+                    return '<font color="red">'.$produk->stok.'</font>';
+                }
+                else{
+                    return $produk->stok;
+                }
             })
             ->addColumn('kadaluarsa', function ($produk) {
-                return tanggal_indonesia($produk->kadaluarsa, false);
+                $dt = Carbon::now();
+                $kadaluarsa = strtotime($produk->kadaluarsa);
+                $now = strtotime($dt->toDateString());
+                $jarak = $kadaluarsa-$now;
+                $hari = $jarak / 60 / 60 / 24;
+                if($hari <= 3){
+                    return '<font color="red">'.tanggal_indonesia($produk->kadaluarsa, false).'</font>';
+                }
+                else{
+                    return tanggal_indonesia($produk->kadaluarsa, false);
+                }
+                
             })
             ->addColumn('aksi', function ($produk) {
                 return '
@@ -65,7 +90,7 @@ class ProdukController extends Controller
                 </div>
                 ';
             })
-            ->rawColumns(['aksi', 'kode_produk', 'select_all'])
+            ->rawColumns(['aksi','stok','kadaluarsa', 'kode_produk', 'select_all'])
             ->make(true);
             }
 
