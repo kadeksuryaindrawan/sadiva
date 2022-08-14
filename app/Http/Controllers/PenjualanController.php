@@ -73,7 +73,8 @@ class PenjualanController extends Controller
 
     public function store(Request $request)
     {
-        $penjualan = Penjualan::findOrFail($request->id_penjualan);
+        if($request->diterima >= $request->bayar){
+            $penjualan = Penjualan::findOrFail($request->id_penjualan);
         $penjualan->total_item = $request->total_item;
         $penjualan->total_harga = $request->total;
         $penjualan->bayar = $request->bayar;
@@ -91,6 +92,14 @@ class PenjualanController extends Controller
         }
 
         return redirect()->route('transaksi.selesai');
+        }
+        else{
+            echo '<script>
+                alert("Uang yang diinput kurang!");
+                window.location.href="/transaksi";
+            </script>';
+        }
+        
     }
 
     public function show($id)

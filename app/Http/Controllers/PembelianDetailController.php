@@ -37,8 +37,8 @@ class PembelianDetailController extends Controller
             $row = array();
             $row['kode_produk'] = '<span class="label label-success">'. $item->produk['kode_produk'] .'</span';
             $row['nama_produk'] = $item->produk['nama_produk'];
-            $row['harga_beli']  = 'Rp. '. format_uang($item->harga_beli);
-            $row['jumlah']      = '<input type="number" class="form-control input-sm quantity" data-id="'. $item->id_pembelian_detail .'" value="'. $item->jumlah .'">';
+            $row['harga_beli']  = '<input type="number" style="width:100%" class="form-control input-md harga_beli" data-id="'. $item->id_pembelian_detail .'" value="'. $item->harga_beli .'">';
+            $row['jumlah']      = '<input type="number" id="quantity" class="form-control input-sm quantity" data-id="'. $item->id_pembelian_detail .'" value="'. $item->jumlah .'">';
             $row['subtotal']    = 'Rp. '. format_uang($item->subtotal);
             $row['aksi']        = '<div class="btn-group">
                                     <button onclick="deleteData(`'. route('pembelian_detail.destroy', $item->id_pembelian_detail) .'`)" class="btn btn-xs btn-danger btn-flat"><i class="fa fa-trash"></i></button>
@@ -62,7 +62,7 @@ class PembelianDetailController extends Controller
         return datatables()
             ->of($data)
             ->addIndexColumn()
-            ->rawColumns(['aksi', 'kode_produk', 'jumlah'])
+            ->rawColumns(['aksi','harga_beli', 'kode_produk', 'jumlah'])
             ->make(true);
     }
 
@@ -76,9 +76,9 @@ class PembelianDetailController extends Controller
         $detail = new PembelianDetail();
         $detail->id_pembelian = $request->id_pembelian;
         $detail->id_produk = $produk->id_produk;
-        $detail->harga_beli = $produk->harga_beli;
+        $detail->harga_beli = 0;
         $detail->jumlah = 1;
-        $detail->subtotal = $produk->harga_beli;
+        $detail->subtotal = 0;
         $detail->save();
 
         return response()->json('Data berhasil disimpan', 200);
@@ -86,10 +86,18 @@ class PembelianDetailController extends Controller
 
     public function update(Request $request, $id)
     {
-        $detail = PembelianDetail::find($id);
-        $detail->jumlah = $request->jumlah;
-        $detail->subtotal = $detail->harga_beli * $request->jumlah;
-        $detail->update();
+        if($request->harga_beli){
+            $detail = PembelianDetail::find($id);
+            $detail->harga_beli = $request->harga_beli;
+            $detail->subtotal = $request->harga_beli * $detail->jumlah;
+            $detail->update();
+        }
+        if($request->jumlah){
+            $detail = PembelianDetail::find($id);
+            $detail->jumlah = $request->jumlah;
+            $detail->subtotal = $detail->harga_beli * $request->jumlah;
+            $detail->update();
+        }
     }
 
     public function destroy($id)

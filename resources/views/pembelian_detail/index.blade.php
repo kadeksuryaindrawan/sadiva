@@ -166,20 +166,31 @@
         });
         table2 = $('.table-produk').DataTable();
 
+        
+
+        $(document).on('input', '.harga_beli', function () {
+            let id = $(this).data('id');
+            let harga_beli = $(this).val();
+
+            $.post(`{{ url('/pembelian_detail') }}/${id}`, {
+                    '_token': $('[name=csrf-token]').attr('content'),
+                    '_method': 'put',
+                    'harga_beli': harga_beli,
+                })
+                .done(response => {
+                    $(this).on('mouseout', function () {
+                        table.ajax.reload(() => loadForm($('#diskon').val()));
+                    });
+                })
+                .fail(errors => {
+                    alert('Tidak dapat menyimpan data');
+                    return;
+                });
+        });
+
         $(document).on('input', '.quantity', function () {
             let id = $(this).data('id');
-            let jumlah = parseInt($(this).val());
-
-            if (jumlah < 1) {
-                $(this).val(1);
-                alert('Jumlah tidak boleh kurang dari 1');
-                return;
-            }
-            if (jumlah > 10000) {
-                $(this).val(10000);
-                alert('Jumlah tidak boleh lebih dari 10000');
-                return;
-            }
+            let jumlah = $(this).val();
 
             $.post(`{{ url('/pembelian_detail') }}/${id}`, {
                     '_token': $('[name=csrf-token]').attr('content'),
